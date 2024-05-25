@@ -10,20 +10,20 @@ public class CalculationsService
         const decimal cleaningFee = 20;
         const decimal breakfastPrice = 15;
 
+        if (period < 0 || peopleCount < 0)
+        {
+            throw new Exception("Values should not be negative");
+        }
+
         decimal totalCost = 0;
 
-        switch (roomType)
+        totalCost += roomType switch
         {
-            case RoomType.Suite:
-                totalCost += 200 * period;
-                break;
-            case RoomType.Deluxe:
-                totalCost += 150 * period;
-                break;
-            case RoomType.Standard:
-                totalCost += 100 * period;
-                break;
-        }
+            RoomType.Suite => 200 * period,
+            RoomType.Deluxe => 150 * period,
+            RoomType.Standard => 100 * period,
+            _ => throw new ArgumentOutOfRangeException(nameof(roomType), roomType, "Invalid room type")
+        };
 
         if (breakfast)
         {

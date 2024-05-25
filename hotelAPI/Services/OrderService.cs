@@ -4,12 +4,12 @@ using Microsoft.EntityFrameworkCore;
 
 namespace hotelAPI.Services;
 
-public class OrderService
+public class OrderService : IOrderService
 {
     private readonly HotelContext _context;
-    private readonly CalculationsService _calculationsService;
+    private readonly ICalculationsService _calculationsService;
 
-    public OrderService(HotelContext hotelContext, CalculationsService calculationsService)
+    public OrderService(HotelContext hotelContext, ICalculationsService calculationsService)
     {
         _context = hotelContext;
         _calculationsService = calculationsService;
@@ -43,7 +43,7 @@ public class OrderService
             throw new Exception("Hotel not found");
         }
 
-        var price = _calculationsService.calculatePrice(request.PeopleCount, request.PeopleCount, request.Breakfast, request.RoomType);
+        var price = _calculationsService.CalculatePrice(request.PeopleCount, request.PeopleCount, request.Breakfast, request.RoomType);
         
         var order = new Order
         {
@@ -76,7 +76,7 @@ public class OrderService
             throw new Exception("Hotel not found");
         }
         
-        var price = _calculationsService.calculatePrice(request.PeopleCount, request.PeopleCount, request.Breakfast, request.RoomType);
+        var price = _calculationsService.CalculatePrice(request.PeopleCount, request.PeopleCount, request.Breakfast, request.RoomType);
 
         order.RoomType = request.RoomType;
         order.Breakfast = request.Breakfast;

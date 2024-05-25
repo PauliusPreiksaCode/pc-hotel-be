@@ -26,9 +26,9 @@ builder.Services.AddSwaggerGen(c =>
 });
 
 // custom services
-builder.Services.AddTransient<HotelService>();
-builder.Services.AddTransient<OrderService>();
-builder.Services.AddTransient<CalculationsService>();
+builder.Services.AddTransient<IHotelService, HotelService>();
+builder.Services.AddTransient<IOrderService, OrderService>();
+builder.Services.AddTransient<ICalculationsService, CalculationsService>();
 
 builder.Services.AddCors(options =>
 {

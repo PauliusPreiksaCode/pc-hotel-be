@@ -7,7 +7,7 @@ namespace hotelAPI.tests;
 
 public class CalculationsServiceTests
 {
-    private readonly CalculationsService _calculationsService = new();
+    private readonly ICalculationsService _calculationsService = new CalculationsService();
 
     [Fact]
         public void CalculatePrice_ValidInputs_ReturnsExpectedPrice()
@@ -18,7 +18,7 @@ public class CalculationsServiceTests
             RoomType roomType = RoomType.Deluxe;
             decimal expectedPrice = (150 * period) + (15 * peopleCount * period) + 20;
 
-            decimal actualPrice = _calculationsService.calculatePrice(peopleCount, period, breakfast, roomType);
+            decimal actualPrice = _calculationsService.CalculatePrice(peopleCount, period, breakfast, roomType);
 
             Assert.Equal(expectedPrice, actualPrice);
         }
@@ -31,7 +31,7 @@ public class CalculationsServiceTests
             bool breakfast = true;
             RoomType roomType = RoomType.Standard;
 
-            var exception = Assert.Throws<Exception>(() => _calculationsService.calculatePrice(peopleCount, period, breakfast, roomType));
+            var exception = Assert.Throws<Exception>(() => _calculationsService.CalculatePrice(peopleCount, period, breakfast, roomType));
             
             Assert.Equal("Values should not be negative", exception.Message);
         }
@@ -44,7 +44,7 @@ public class CalculationsServiceTests
             bool breakfast = false;
             RoomType roomType = RoomType.Suite;
 
-            var exception = Assert.Throws<Exception>(() => _calculationsService.calculatePrice(peopleCount, period, breakfast, roomType));
+            var exception = Assert.Throws<Exception>(() => _calculationsService.CalculatePrice(peopleCount, period, breakfast, roomType));
             
             Assert.Equal("Values should not be negative", exception.Message);
         }
@@ -57,7 +57,7 @@ public class CalculationsServiceTests
             bool breakfast = false;
             RoomType roomType = (RoomType)999; // Invalid room type
 
-            Assert.Throws<ArgumentOutOfRangeException>(() => _calculationsService.calculatePrice(peopleCount, period, breakfast, roomType));
+            Assert.Throws<ArgumentOutOfRangeException>(() => _calculationsService.CalculatePrice(peopleCount, period, breakfast, roomType));
         }
 
         [Fact]
@@ -72,7 +72,7 @@ public class CalculationsServiceTests
             };
             decimal expectedPrice = (100 * request.Period) + (15 * request.PeopleCount * request.Period) + 20;
 
-            decimal actualPrice = _calculationsService.calculatePrice(request);
+            decimal actualPrice = _calculationsService.CalculatePrice(request);
 
             Assert.Equal(expectedPrice, actualPrice);
         }

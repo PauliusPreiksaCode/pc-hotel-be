@@ -7,9 +7,9 @@ namespace hotelAPI.Controllers;
 [Route("hotel")]
 public class HotelController : ControllerBase
 {
-    private readonly HotelService _hotelService;
+    private readonly IHotelService _hotelService;
 
-    public HotelController(HotelService hotelService)
+    public HotelController(IHotelService hotelService)
     {
         _hotelService = hotelService;
     }

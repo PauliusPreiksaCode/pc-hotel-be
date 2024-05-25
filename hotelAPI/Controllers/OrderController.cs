@@ -7,10 +7,10 @@ namespace hotelAPI.Controllers;
 [Route("order")]
 public class OrderController : ControllerBase
 {
-    private readonly OrderService _orderService;
-    private readonly CalculationsService _calculationsService;
+    private readonly IOrderService _orderService;
+    private readonly ICalculationsService _calculationsService;
 
-    public OrderController(OrderService orderService, CalculationsService calculationsService)
+    public OrderController(IOrderService orderService, ICalculationsService calculationsService)
     {
         _orderService = orderService;
         _calculationsService = calculationsService;
@@ -113,7 +113,7 @@ public class OrderController : ControllerBase
     {
         try
         {
-            var price = _calculationsService.calculatePrice(request);
+            var price = _calculationsService.CalculatePrice(request);
             return Ok(price);
         }
         catch (Exception e)

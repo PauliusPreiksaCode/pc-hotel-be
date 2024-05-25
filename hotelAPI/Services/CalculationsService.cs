@@ -3,9 +3,9 @@ using hotelAPI.Enums;
 
 namespace hotelAPI.Services;
 
-public class CalculationsService
+public class CalculationsService : ICalculationsService
 {
-    public decimal calculatePrice(int peopleCount, int period, bool breakfast, RoomType roomType)
+    public decimal CalculatePrice(int peopleCount, int period, bool breakfast, RoomType roomType)
     {
         const decimal cleaningFee = 20;
         const decimal breakfastPrice = 15;
@@ -35,8 +35,8 @@ public class CalculationsService
         return totalCost;
     }
 
-    public decimal calculatePrice(GetPriceRequest request)
+    public decimal CalculatePrice(GetPriceRequest request)
     {
-        return calculatePrice(request.PeopleCount, request.Period, request.Breakfast, request.RoomType);
+        return CalculatePrice(request.PeopleCount, request.Period, request.Breakfast, request.RoomType);
     }
 }

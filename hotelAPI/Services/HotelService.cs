@@ -4,7 +4,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace hotelAPI.Services;
 
-public class HotelService
+public class HotelService : IHotelService
 {
     private readonly HotelContext _context;
 

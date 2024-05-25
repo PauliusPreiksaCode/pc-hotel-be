@@ -5,15 +5,22 @@ using Microsoft.AspNetCore.Mvc;
 namespace hotelAPI.Controllers;
 
 [Route("hotel")]
-public class HotelController(HotelService hotelService) : ControllerBase
+public class HotelController : ControllerBase
 {
+    private readonly HotelService _hotelService;
+
+    public HotelController(HotelService hotelService)
+    {
+        _hotelService = hotelService;
+    }
+
     [HttpGet]
     [Route("list")]
     public async Task<IActionResult> GetAllHotels()
     {
         try
         {
-            var hotels = await hotelService.GetAllHotels();
+            var hotels = await _hotelService.GetAllHotels();
             return Ok(hotels);
         }
         catch (Exception e)
@@ -30,7 +37,7 @@ public class HotelController(HotelService hotelService) : ControllerBase
     {
         try
         {
-            var hotel = hotelService.GetHotelById(id);
+            var hotel = _hotelService.GetHotelById(id);
             return Ok(hotel);
         }
         catch (Exception e)
@@ -48,7 +55,7 @@ public class HotelController(HotelService hotelService) : ControllerBase
     {
         try
         {
-            await hotelService.AddHotel(request);
+            await _hotelService.AddHotel(request);
             return Ok();
         }
         catch (Exception e)
@@ -65,7 +72,7 @@ public class HotelController(HotelService hotelService) : ControllerBase
     {
         try
         {
-            await hotelService.UpdateHotel(request);
+            await _hotelService.UpdateHotel(request);
             return Ok();
         }
         catch (Exception e)
@@ -83,7 +90,7 @@ public class HotelController(HotelService hotelService) : ControllerBase
     {
         try
         {
-            await hotelService.DeleteHotel(id);
+            await _hotelService.DeleteHotel(id);
             return Ok();
         }
         catch (Exception e)

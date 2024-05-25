@@ -4,17 +4,24 @@ using Microsoft.EntityFrameworkCore;
 
 namespace hotelAPI.Services;
 
-public class HotelService(HotelContext context)
+public class HotelService
 {
+    private readonly HotelContext _context;
+
+    public HotelService(HotelContext context)
+    {
+        _context = context;
+    }
+
     public async Task<List<Hotel>> GetAllHotels()
     {
-        var hotels = await context.Hotel.ToListAsync();
+        var hotels = await _context.Hotel.ToListAsync();
         return hotels;
     }
 
     public Hotel GetHotelById(Guid id)
     {
-        var hotel = context.Hotel.FirstOrDefault(x => x.Id.Equals(id));
+        var hotel = _context.Hotel.FirstOrDefault(x => x.Id.Equals(id));
 
         if (hotel is null)
         {
@@ -33,13 +40,13 @@ public class HotelService(HotelContext context)
             Photo = request.Photo
         };
 
-        await context.Hotel.AddAsync(hotel);
-        await context.SaveChangesAsync();
+        await _context.Hotel.AddAsync(hotel);
+        await _context.SaveChangesAsync();
     }
 
     public async Task UpdateHotel(EditHotelRequest request)
     {
-        var hotel = context.Hotel.FirstOrDefault(x => x.Id.Equals(request.Id));
+        var hotel = _context.Hotel.FirstOrDefault(x => x.Id.Equals(request.Id));
 
         if (hotel is null)
         {
@@ -50,19 +57,19 @@ public class HotelService(HotelContext context)
         hotel.Location = request.Location;
         hotel.Photo = request.Photo;
 
-        await context.SaveChangesAsync();
+        await _context.SaveChangesAsync();
     }
 
     public async Task DeleteHotel(Guid id)
     {
-        var hotel = context.Hotel.FirstOrDefault(x => x.Id.Equals(id));
+        var hotel = _context.Hotel.FirstOrDefault(x => x.Id.Equals(id));
         
         if (hotel is null)
         {
             throw new Exception("Hotel not found");
         }
 
-        var orders = await context.Order
+        var orders = await _context.Order
             .Include(x => x.Hotel)
             .ToListAsync();
 
@@ -73,7 +80,7 @@ public class HotelService(HotelContext context)
             throw new Exception("Hotel is booked");
         }
 
-        context.Hotel.Remove(hotel);
-        await context.SaveChangesAsync();
+        _context.Hotel.Remove(hotel);
+        await _context.SaveChangesAsync();
     }
 }

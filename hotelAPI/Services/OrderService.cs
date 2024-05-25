@@ -4,18 +4,27 @@ using Microsoft.EntityFrameworkCore;
 
 namespace hotelAPI.Services;
 
-public class OrderService(HotelContext context, CalculationsService calculationsService)
+public class OrderService
 {
+    private readonly HotelContext _context;
+    private readonly CalculationsService _calculationsService;
+
+    public OrderService(HotelContext hotelContext, CalculationsService calculationsService)
+    {
+        _context = hotelContext;
+        _calculationsService = calculationsService;
+    }
+
     public async Task<List<Order>> GetAllOrders()
     {
-        return await context.Order
+        return await _context.Order
             .Include(x => x.Hotel)
             .ToListAsync();
     }
     
     public Order GetOrderById(Guid id)
     {
-        var order = context.Order.FirstOrDefault(x => x.Id.Equals(id));
+        var order = _context.Order.FirstOrDefault(x => x.Id.Equals(id));
 
         if (order is null)
         {
@@ -27,14 +36,14 @@ public class OrderService(HotelContext context, CalculationsService calculations
 
     public async Task AddOrder(AddOrderRequest request)
     {
-        var hotel = context.Hotel.FirstOrDefault(x => x.Id.Equals(request.HotelId));
+        var hotel = _context.Hotel.FirstOrDefault(x => x.Id.Equals(request.HotelId));
         
         if (hotel is null)
         {
             throw new Exception("Hotel not found");
         }
 
-        var price = calculationsService.calculatePrice(request.PeopleCount, request.PeopleCount, request.Breakfast, request.RoomType);
+        var price = _calculationsService.calculatePrice(request.PeopleCount, request.PeopleCount, request.Breakfast, request.RoomType);
         
         var order = new Order
         {
@@ -47,27 +56,27 @@ public class OrderService(HotelContext context, CalculationsService calculations
             Hotel = hotel
         };
 
-        await context.AddAsync(order);
-        await context.SaveChangesAsync();
+        await _context.AddAsync(order);
+        await _context.SaveChangesAsync();
     }
 
     public async Task UpdateOrder(EditOrderRequest request)
     {
-        var order = context.Order.FirstOrDefault(x => x.Id.Equals(request.Id));
+        var order = _context.Order.FirstOrDefault(x => x.Id.Equals(request.Id));
         
         if (order is null)
         {
             throw new Exception("Order not found");
         }
         
-        var hotel = context.Hotel.FirstOrDefault(x => x.Id.Equals(request.HotelId));
+        var hotel = _context.Hotel.FirstOrDefault(x => x.Id.Equals(request.HotelId));
         
         if (hotel is null)
         {
             throw new Exception("Hotel not found");
         }
         
-        var price = calculationsService.calculatePrice(request.PeopleCount, request.PeopleCount, request.Breakfast, request.RoomType);
+        var price = _calculationsService.calculatePrice(request.PeopleCount, request.PeopleCount, request.Breakfast, request.RoomType);
 
         order.RoomType = request.RoomType;
         order.Breakfast = request.Breakfast;
@@ -77,19 +86,19 @@ public class OrderService(HotelContext context, CalculationsService calculations
         order.Price = price;
         order.Hotel = hotel;
 
-        await context.SaveChangesAsync();
+        await _context.SaveChangesAsync();
     }
 
     public async Task DeleteOrder(Guid id)
     {
-        var order = context.Order.FirstOrDefault(x => x.Id.Equals(id));
+        var order = _context.Order.FirstOrDefault(x => x.Id.Equals(id));
         
         if (order is null)
         {
             throw new Exception("Order not found");
         }
 
-        context.Order.Remove(order);
-        await context.SaveChangesAsync();
+        _context.Order.Remove(order);
+        await _context.SaveChangesAsync();
     }
 }

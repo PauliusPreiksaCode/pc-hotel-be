@@ -5,15 +5,24 @@ using Microsoft.AspNetCore.Mvc;
 namespace hotelAPI.Controllers;
 
 [Route("order")]
-public class OrderController(OrderService orderService, CalculationsService calculationsService) : ControllerBase
+public class OrderController : ControllerBase
 {
+    private readonly OrderService _orderService;
+    private readonly CalculationsService _calculationsService;
+
+    public OrderController(OrderService orderService, CalculationsService calculationsService)
+    {
+        _orderService = orderService;
+        _calculationsService = calculationsService;
+    }
+
     [HttpGet]
     [Route("list")]
     public async Task<IActionResult> GetAllOrders()
     {
         try
         {
-            var orders = await orderService.GetAllOrders();
+            var orders = await _orderService.GetAllOrders();
             return Ok(orders);
         }
         catch (Exception e)
@@ -30,7 +39,7 @@ public class OrderController(OrderService orderService, CalculationsService calc
     {
         try
         {
-            var order = orderService.GetOrderById(id);
+            var order = _orderService.GetOrderById(id);
             return Ok(order);
         }
         catch (Exception e)
@@ -48,7 +57,7 @@ public class OrderController(OrderService orderService, CalculationsService calc
     {
         try
         {
-            await orderService.AddOrder(request);
+            await _orderService.AddOrder(request);
             return Ok();
         }
         catch (Exception e)
@@ -66,7 +75,7 @@ public class OrderController(OrderService orderService, CalculationsService calc
     {
         try
         {
-            await orderService.UpdateOrder(request);
+            await _orderService.UpdateOrder(request);
             return Ok();
         }
         catch (Exception e)
@@ -85,7 +94,7 @@ public class OrderController(OrderService orderService, CalculationsService calc
     {
         try
         {
-            await orderService.DeleteOrder(id);
+            await _orderService.DeleteOrder(id);
             return Ok();
         }
         catch (Exception e)
@@ -104,7 +113,7 @@ public class OrderController(OrderService orderService, CalculationsService calc
     {
         try
         {
-            var price = calculationsService.calculatePrice(request);
+            var price = _calculationsService.calculatePrice(request);
             return Ok(price);
         }
         catch (Exception e)
